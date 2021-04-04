@@ -2,37 +2,28 @@
 
 void QuickSort(int *a, int l, int r)
 {
-    if (l >= r)
+    int i = l, j = r, pivot = a[(l + r) / 2];
+    while (i <= j)
     {
-        return;
-    }
-    int t = a[l];
-    a[l] = a[(l + r) / 2];
-    a[(l + r) / 2] = t;
-    int pivot = a[l];
-    int l0 = l, r0 = r;
-    while (l < r)
-    {
-        while (l < r && a[r] > pivot)
+        while (a[i] < pivot)
         {
-            r--;
+            i++;
         }
-        if (l < r)
+        while (a[j] > pivot)
         {
-            a[l] = a[r];
-            l++;
+            j--;
         }
-        while (l < r && a[l] < pivot)
+        if (i <= j)
         {
-            l++;
-        }
-        if (l < r)
-        {
-            a[r] = a[l];
-            r--;
+            std::swap(a[i++], a[j--]);
         }
     }
-    a[l] = pivot;
-    QuickSort(a, l0, l - 1);
-    QuickSort(a, l + 1, r0);
+    if (l < j)
+    {
+        QuickSort(a, l, j);
+    }
+    if (i < r)
+    {
+        QuickSort(a, i, r);
+    }
 }
