@@ -58,9 +58,34 @@ void Benchmark_BubbleSort()
     puts("");
 }
 
+void Benchmark_QuickSort()
+{
+    puts("Testing performance of quick sort ...");
+    int num;
+    for (int i = 0; i < MAX_GROUP; i++)
+    {
+        std::string file_name = FILE_PREFIX + std::to_string(i + 1) + FILE_SUFFIX;
+        freopen(file_name.c_str(), "r", stdin);
+        scanf("%d", &num);
+        int *a = (int *)malloc(num * sizeof(int));
+        for (int j = 0; j < num; j++)
+        {
+            scanf("%d", a + j);
+        }
+        clock_t begin = clock();
+        QuickSort(a, 0, num - 1);
+        clock_t end = clock();
+        double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+        printf("Time cost of sorting %d numbers using quick sort is %lfs.\n", num, time_spent);
+        free(a);
+    }
+    puts("");
+}
+
 int main()
 {
-    //Benchmark_Baseline();
+    Benchmark_Baseline();
     Benchmark_BubbleSort();
+    Benchmark_QuickSort();
     return 0;
 }
