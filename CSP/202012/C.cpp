@@ -14,7 +14,7 @@ https://blog.csdn.net/qq_43381135/article/details/112953778 */
 using namespace std;
 
 // Global variables
-const int MAX_NUM = 1e5 + 5;
+const int MAX_NUM = 4e5 + 5;
 static int num = 0;               // total number of nodes
 vector<pair<int, string>> recall; // store temporary path in case cannot create new file
 
@@ -28,6 +28,24 @@ struct node
     ll ldir_u, ldes_u;      // used space for files...
     int size;               // size for a file
 } a[MAX_NUM];               // the index of an element is also the unique id of the node
+
+void print_debug()
+{
+    for (int i = 0; i <= num; i++)
+    {
+        cout << "\nindex: " << i << "\n"
+             << "parent: " << a[i].parent << "\n";
+        cout << "child: ";
+        for (auto it = a[i].child.begin(); it != a[i].child.end(); it++)
+        {
+            cout << it->fi << " " << it->se << "\n";
+        }
+        cout << "is_directory: " << a[i].is_directory << "\n"
+             << "ldir: " << a[i].ldir << " ldes: " << a[i].ldes << "\n"
+             << "ldir_u: " << (int)a[i].ldir_u << " ldes_u: " << (int)a[i].ldes_u << "\n"
+             << "size: " << a[i].size << "\n\n";
+    }
+}
 
 void roll_back()
 {
@@ -307,8 +325,8 @@ char change_restriction()
     {
         return 'N';
     }
-    a[change_id].ldir_u = new_ldir;
-    a[change_id].ldes_u = new_ldes;
+    a[change_id].ldir = new_ldir;
+    a[change_id].ldes = new_ldes;
     return 'Y';
 }
 
@@ -332,12 +350,15 @@ int main()
         {
         case 'C':
             cout << create_file() << endl;
+            //print_debug();
             break;
         case 'R':
             cout << delete_file() << endl;
+            //print_debug();
             break;
         case 'Q':
             cout << change_restriction() << endl;
+            //print_debug();
             break;
         default:
             break;
