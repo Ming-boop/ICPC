@@ -14,7 +14,7 @@ https://blog.csdn.net/qq_43381135/article/details/112953778 */
 using namespace std;
 
 // Global variables
-const int MAX_NUM = 4e5 + 5;
+const int MAX_NUM = 1e5 + 5;
 static int num = 0;               // total number of nodes
 vector<pair<int, string>> recall; // store temporary path in case cannot create new file
 
@@ -26,26 +26,8 @@ struct node
     bool is_directory;      // true if it is a directory node, false if it is a file node
     ll ldir, ldes;          // maximum space for files in this directory and for its descendents
     ll ldir_u, ldes_u;      // used space for files...
-    int size;               // size for a file
+    int size;                // size for a file
 } a[MAX_NUM];               // the index of an element is also the unique id of the node
-
-void print_debug()
-{
-    for (int i = 0; i <= num; i++)
-    {
-        cout << "\nindex: " << i << "\n"
-             << "parent: " << a[i].parent << "\n";
-        cout << "child: ";
-        for (auto it = a[i].child.begin(); it != a[i].child.end(); it++)
-        {
-            cout << it->fi << " " << it->se << "\n";
-        }
-        cout << "is_directory: " << a[i].is_directory << "\n"
-             << "ldir: " << a[i].ldir << " ldes: " << a[i].ldes << "\n"
-             << "ldir_u: " << (int)a[i].ldir_u << " ldes_u: " << (int)a[i].ldes_u << "\n"
-             << "size: " << a[i].size << "\n\n";
-    }
-}
 
 void roll_back()
 {
@@ -130,7 +112,7 @@ char create_file()
         int child_id = a[cur_id].child[next_dir];
         if (a[child_id].is_directory)
         {
-            roll_back(); // not to mention a second time, see line 92-94
+            roll_back(); // not to mention a second time, see line 95-97
             num = num_bak;
             return 'N';
         }
@@ -138,7 +120,7 @@ char create_file()
     ll delta_size = filesize - (is_new ? 0 : a[a[cur_id].child[next_dir]].size); // now let's take a look at the space change, whether creating or modifying a file
     if (a[cur_id].ldir_u + delta_size > a[cur_id].ldir)                          // exceed current directory space limit
     {
-        roll_back(); // not to mention a second time, see line 92-94
+        roll_back(); // not to mention a second time, see line 95-97
         num = num_bak;
         return 'N';
     }
@@ -147,7 +129,7 @@ char create_file()
     {
         if (a[back_id].ldes_u + delta_size > a[back_id].ldes) // exceed descendent space limit
         {
-            roll_back(); // not to mention a second time, see line 92-94
+            roll_back(); // not to mention a second time, see line 95-97
             num = num_bak;
             return 'N';
         }
@@ -224,6 +206,10 @@ char delete_file()
     for (next_dir_pointer++; next_dir_pointer < filepath.size(); next_dir_pointer++)
     {
         next_dir += filepath[next_dir_pointer];
+    }
+    if (a[cur_id].child.find(next_dir) == a[cur_id].child.end())
+    {
+        return 'Y';
     }
     int child_id = a[cur_id].child[next_dir];
     ll delta_size;
@@ -350,15 +336,12 @@ int main()
         {
         case 'C':
             cout << create_file() << endl;
-            //print_debug();
             break;
         case 'R':
             cout << delete_file() << endl;
-            //print_debug();
             break;
         case 'Q':
             cout << change_restriction() << endl;
-            //print_debug();
             break;
         default:
             break;
